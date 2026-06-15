@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>DROPP — Кабинет автора</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #05070A; font-family: 'Inter', sans-serif; color: #EDEEF2; }
+        .bg-cyber {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(155,77,255,0.05) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(155,77,255,0.05) 1px, transparent 1px);
+            background-size: 40px 40px; pointer-events: none; z-index: 0;
+        }
+        .bg-cyber::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(0,240,255,0.08), rgba(0,0,0,0) 70%),
+                        radial-gradient(circle at 80% 70%, rgba(155,77,255,0.1), rgba(0,0,0,0) 70%);
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+        .glass { background: rgba(20,24,31,0.75); backdrop-filter: blur(12px); border: 1px solid rgba(155,77,255,0.25); border-radius: 28px; }
+        .glass-card { background: rgba(20,24,31,0.7); backdrop-filter: blur(12px); border: 1px solid rgba(155,77,255,0.25); border-radius: 28px; transition: all 0.25s ease; }
+        .glass-card:hover { transform: translateY(-4px); border-color: #00F0FF; }
+
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; flex-wrap: wrap; gap: 16px; }
+        .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #FFFFFF, #9B4DFF, #00F0FF); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .nav-links { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { color: #CBD5E1; text-decoration: none; font-weight: 500; transition: 0.2s; }
+        .nav-links a:hover { color: #00F0FF; }
+        .avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #9B4DFF, #00F0FF); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; }
+
+        .profile-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 30px 0; align-items: center; justify-content: space-between; }
+        .profile-left { display: flex; gap: 24px; align-items: center; }
+        .profile-avatar { width: 80px; height: 80px; background: linear-gradient(135deg, #9B4DFF, #00F0FF); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+        .profile-info h2 { font-size: 1.8rem; margin-bottom: 5px; }
+        .profile-info p { color: #8B93A0; }
+        .level-badge { background: rgba(155,77,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; display: inline-block; margin-top: 8px; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .stat-card { text-align: center; padding: 24px; }
+        .stat-card i { font-size: 2rem; color: #9B4DFF; margin-bottom: 12px; }
+        .stat-number { font-size: 2rem; font-weight: 800; }
+        .stat-label { color: #8B93A0; }
+
+        .section-title { font-size: 1.5rem; margin: 30px 0 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .section-link { color: #00F0FF; font-size: 0.9rem; text-decoration: none; }
+        .btn-primary { background: linear-gradient(95deg, #9B4DFF, #7A3CE3); border: none; padding: 12px 24px; border-radius: 40px; color: white; font-weight: 600; cursor: pointer; }
+        .btn-small { padding: 8px 20px; font-size: 0.85rem; width: auto; }
+        .btn-outline { background: transparent; border: 1px solid #9B4DFF; padding: 8px 20px; border-radius: 40px; color: white; cursor: pointer; }
+
+        .worlds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .world-card { padding: 16px; }
+        .world-status { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; margin-bottom: 10px; }
+        .status-published { background: rgba(16,185,129,0.2); color: #10B981; }
+        .status-draft { background: rgba(245,158,11,0.2); color: #F59E0B; }
+        .world-stats { display: flex; gap: 15px; margin: 12px 0; color: #8B93A0; font-size: 0.8rem; }
+
+        .offers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .offer-card { padding: 16px; }
+        .offer-brand { color: #00F0FF; font-weight: bold; }
+        .offer-price { color: #10B981; font-weight: bold; margin: 10px 0; }
+
+        .message-item { padding: 16px; border-bottom: 1px solid rgba(155,77,255,0.2); display: flex; justify-content: space-between; align-items: center; }
+
+        .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(155,77,255,0.2); }
+        .doc-item:last-child { border-bottom: none; }
+
+        .verif-row { display: flex; justify-content: space-between; align-items: center; padding: 16px; border-bottom: 1px solid rgba(155,77,255,0.2); }
+        .verif-status { font-size: 0.8rem; }
+        .status-done { color: #10B981; }
+        .status-pending { color: #F59E0B; }
+
+        .footer { border-top: 1px solid rgba(155,77,255,0.2); padding: 40px 0; margin-top: 40px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 30px; }
+        .footer-col a { color: #8B93A0; text-decoration: none; display: block; margin-bottom: 8px; }
+
+        @media (max-width: 860px) { .container { padding: 0 20px; } .navbar { flex-direction: column; } }
+    </style>
+</head>
+<body>
+<div class="bg-cyber"></div>
+<div class="container">
+    <!-- header -->
+    <div class="glass" style="margin-top: 20px; padding: 0 20px;">
+        <div class="navbar">
+            <div class="logo">⚡ DROPP</div>
+            <div class="nav-links">
+                <a href="index.html">Игры</a>
+                <a href="#">Рейтинги</a>
+                <a href="#">Новинки</a>
+                <a href="#">Бренды</a>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- profile -->
+    <div class="profile-row">
+        <div class="profile-left">
+            <div class="profile-avatar">🎨</div>
+            <div class="profile-info">
+                <h2>Алексей (NeoMind)</h2>
+                <p><i class="fab fa-telegram"></i> @neomind_dropp</p>
+                <span class="level-badge">⭐ Мастер | Рейтинг: 88/100</span>
+            </div>
+        </div>
+        <button class="btn-primary btn-small"><i class="fas fa-plus"></i> Создать мир</button>
+    </div>
+
+    <!-- finance stats -->
+    <div class="stats-grid">
+        <div class="stat-card glass-card"><i class="fas fa-wallet"></i><div class="stat-number">12 450 ₽</div><div class="stat-label">Баланс</div></div>
+        <div class="stat-card glass-card"><i class="fas fa-clock"></i><div class="stat-number">2 300 ₽</div><div class="stat-label">Заблокировано (ожидание 24ч)</div></div>
+        <div class="stat-card glass-card"><i class="fas fa-chart-line"></i><div class="stat-number">+34%</div><div class="stat-label">За месяц</div></div>
+    </div>
+
+    <!-- withdraw -->
+    <div class="section-title">💸 Вывод средств</div>
+    <div class="glass-card" style="padding: 20px;">
+        <p><strong>Доступно к выводу: 12 450 ₽</strong></p>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap; margin: 15px 0;">
+            <input type="number" placeholder="Сумма в рублях" style="background: #0E1219; border: 1px solid #2A2F3A; border-radius: 40px; padding: 12px 20px; color: white; flex: 1;">
+            <button class="btn-primary">Запросить вывод</button>
+        </div>
+        <p style="font-size: 0.85rem; color: #8B93A0; margin-top: 10px;">
+            ⏱️ <strong>Средства будут отправлены через 24 часа</strong> после запроса.<br>
+            💳 Зачисление на ваш счёт зависит от банка (обычно 1–3 рабочих дня).<br>
+            ⚠️ В праздничные дни вашей страны возможны задержки зачисления.
+        </p>
+    </div>
+
+    <!-- my worlds -->
+    <div class="section-title">
+        🎮 Мои миры
+        <a href="#" class="section-link">Все миры →</a>
+    </div>
+    <div class="worlds-grid">
+        <div class="world-card glass-card">
+            <span class="world-status status-published">✅ Опубликован</span>
+            <h3>Пузырьки Колы</h3>
+            <p>Создан: 10.06.2026</p>
+            <div class="world-stats"><span>👁️ 3.4k</span><span>💰 2 450 ₽</span><span>⭐ 4.8</span></div>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+                <button class="btn-small btn-primary">Редактировать</button>
+                <button class="btn-small btn-outline">Статистика</button>
+            </div>
+        </div>
+        <div class="world-card glass-card">
+            <span class="world-status status-draft">📝 Черновик</span>
+            <h3>Заброшенный ТРЦ</h3>
+            <p>Создан: 14.06.2026</p>
+            <button class="btn-small btn-primary" style="margin-top: 12px;">Продолжить</button>
+        </div>
+        <div class="world-card glass-card">
+            <span class="world-status status-published">✅ Опубликован</span>
+            <h3>Неон Токио</h3>
+            <p>Создан: 05.06.2026</p>
+            <div class="world-stats"><span>👁️ 856</span><span>💰 890 ₽</span><span>⭐ 4.7</span></div>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+                <button class="btn-small btn-primary">Редактировать</button>
+                <button class="btn-small btn-outline">Статистика</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- brand offers -->
+    <div class="section-title">
+        🏢 Предложения брендов
+        <a href="#" class="section-link">Все предложения →</a>
+    </div>
+    <div class="offers-grid">
+        <div class="offer-card glass-card">
+            <div class="offer-brand">🔴 Red Bull</div>
+            <h4>Экстрим-мир</h4>
+            <p>Тема: скорость, прыжки, адреналин</p>
+            <div class="offer-price">$50 + $0.10 за подбор</div>
+            <button class="btn-primary btn-small" style="margin-top: 10px;">Взять предложение</button>
+        </div>
+        <div class="offer-card glass-card">
+            <div class="offer-brand">👟 Nike</div>
+            <h4>Спортивный стиль</h4>
+            <p>Тема: мода, спорт, дизайн</p>
+            <div class="offer-price">$30 + $0.05 за подбор</div>
+            <button class="btn-primary btn-small" style="margin-top: 10px;">Взять предложение</button>
+        </div>
+        <div class="offer-card glass-card">
+            <div class="offer-brand">🧥 TeeWear</div>
+            <h4>Модный показ</h4>
+            <p>Тема: одежда, футболки, стиль</p>
+            <div class="offer-price">$40 + $0.07 за подбор</div>
+            <button class="btn-primary btn-small" style="margin-top: 10px;">Взять предложение</button>
+        </div>
+    </div>
+
+    <!-- messages -->
+    <div class="section-title">
+        💬 Сообщения с брендами
+        <a href="#" class="section-link">Все сообщения →</a>
+    </div>
+    <div class="glass-card" style="padding: 0;">
+        <div class="message-item"><div><b>🔴 Red Bull:</b> «Добрый день! Мы одобрили ваш мир...»</div><span class="section-link">Ответить</span></div>
+        <div class="message-item"><div><b>👟 Nike:</b> «Загрузите, пожалуйста, нашу модель...»</div><span class="section-link">Ответить</span></div>
+        <div class="message-item"><div><b>🧥 TeeWear:</b> «Контракт подписан, ожидаем публикации»</div><span class="section-link">Ответить</span></div>
+    </div>
+    <div class="glass-card" style="margin-top: 10px; padding: 12px; background: rgba(245,158,11,0.1); border-color: #F59E0B;">
+        <p style="font-size: 0.75rem;">⚠️ Все обсуждения контрактов — только на платформе. Переход в Telegram / WhatsApp запрещён. Нарушение — блокировка аккаунта.</p>
+    </div>
+
+    <!-- documents & contracts -->
+    <div class="section-title">
+        📄 Документы (Контракты)
+        <a href="#" class="section-link">Все документы →</a>
+    </div>
+    <div class="glass-card" style="padding: 0;">
+        <div class="doc-item"><span><i class="fas fa-file-signature"></i> Лицензионное соглашение (подписано 15.06.2026)</span><button class="btn-outline btn-small">Скачать PDF</button></div>
+        <div class="doc-item"><span><i class="fas fa-file-contract"></i> Договор оферты (актуальная версия)</span><button class="btn-outline btn-small">Скачать PDF</button></div>
+        <div class="doc-item"><span><i class="fas fa-handshake"></i> Контракт с Red Bull — мир «Пузырьки Колы»</span><button class="btn-outline btn-small">Скачать PDF</button></div>
+        <div class="doc-item"><span><i class="fas fa-handshake"></i> Контракт с Nike — мир «Неон Токио»</span><button class="btn-outline btn-small">Скачать PDF</button></div>
+        <div class="doc-item"><span><i class="fas fa-chart-bar"></i> Акт выполненных работ за май 2026</span><button class="btn-outline btn-small">Скачать PDF</button></div>
+        <div class="doc-item"><span><i class="fas fa-history"></i> История выплат (все транзакции)</span><button class="btn-outline btn-small">Скачать CSV</button></div>
+    </div>
+
+    <!-- verification -->
+    <div class="section-title">
+        🛡️ Верификация и безопасность
+    </div>
+    <div class="glass-card" style="padding: 0;">
+        <div class="verif-row">
+            <div><strong>Физическое лицо</strong><br><span class="verif-status status-done">✅ Телефон, Email, Паспорт — подтверждены</span></div>
+            <button class="btn-outline btn-small">Редактировать</button>
+        </div>
+        <div class="verif-row">
+            <div><strong>Юридическое лицо / ИП / Самозанятый</strong><br><span class="verif-status status-pending">⬜ Реквизиты не указаны</span></div>
+            <button class="btn-primary btn-small">Пройти верификацию</button>
+        </div>
+        <div class="verif-row">
+            <div><strong>Безопасность выплат</strong><br><span>Подтверждение вывода через Telegram | История входов</span></div>
+            <button class="btn-outline btn-small">Посмотреть историю</button>
+        </div>
+    </div>
+
+    <!-- license agreement checkbox -->
+    <div class="glass-card" style="margin-top: 20px; padding: 20px; border-color: #F59E0B;">
+        <h4><i class="fas fa-file-contract"></i> Лицензионное соглашение</h4>
+        <p style="font-size: 0.85rem; margin: 10px 0;">Я, автор платформы DROPP, подтверждаю, что все элементы моих миров созданы мной или используются на законных основаниях. Я несу полную ответственность за нарушение авторских прав. Платформа вправе приостановить публикацию мира по требованию правообладателя.</p>
+        <label style="display: flex; align-items: center; gap: 10px; margin: 15px 0;">
+            <input type="checkbox" checked> Я принимаю условия лицензионного соглашения
+        </label>
+        <button class="btn-primary btn-small">Подтвердить и сохранить</button>
+    </div>
+
+    <!-- settings -->
+    <div class="section-title">⚙️ Настройки</div>
+    <div class="glass-card" style="padding: 20px;">
+        <p><i class="fas fa-language"></i> Язык: Русский / English / Türkçe</p>
+        <p><i class="fas fa-bell"></i> Уведомления: о новых предложениях, сообщениях, статусе выплат</p>
+        <p><i class="fas fa-laptop"></i> Активные сессии: Chrome (Москва), iPhone Safari</p>
+        <p><i class="fas fa-credit-card"></i> Реквизиты для выплат: указаны (Сбербанк)</p>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
+            <button class="btn-primary btn-small">Редактировать профиль</button>
+            <button class="btn-outline btn-small">Завершить все сессии</button>
+        </div>
+    </div>
+
+    <!-- footer -->
+    <div class="footer">
+        <div class="footer-col"><b>⚡ DROPP</b><a href="#">О проекте</a><a href="#">Помощь</a></div>
+        <div class="footer-col"><b>Для авторов</b><a href="#">Стать автором</a><a href="#">Песочница</a><a href="#">Контракты</a></div>
+        <div class="footer-col"><b>Для брендов</b><a href="#">Размещение</a><a href="#">Депозит</a></div>
+        <div class="footer-col"><i class="fab fa-telegram"></i> <i class="fab fa-twitter"></i> <i class="fab fa-discord"></i><br>🌐 Русский / English</div>
+    </div>
+</div>
+</body>
+</html>
